@@ -1,0 +1,347 @@
+[
+    {
+        "id": "7af0a04bde3f8c29",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9f7f61270ee9324d",
+        "type": "http request",
+        "z": "7af0a04bde3f8c29",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.openweathermap.org/data/2.5/weather?q={{payload.Town}}&appid=4f7549e785ffffe1bbd76de4495463d5&units=metric",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 390,
+        "y": 300,
+        "wires": [
+            [
+                "7059792a812e34c6",
+                "06a9b6d3654828f2"
+            ]
+        ]
+    },
+    {
+        "id": "2852d80962599e56",
+        "type": "http request",
+        "z": "7af0a04bde3f8c29",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://pokeapi.co/api/v2/type/{{payload}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 830,
+        "y": 380,
+        "wires": [
+            [
+                "ac922a65992daf05"
+            ]
+        ]
+    },
+    {
+        "id": "7059792a812e34c6",
+        "type": "function",
+        "z": "7af0a04bde3f8c29",
+        "name": "function 5",
+        "func": "var weather = msg.payload.weather[0].main;\n\nswitch (weather) {\n    case \"Clear\":\n        msg.payload = \"Fire\"; // Slunečno → Ohniví Pokémoni 🔥\n        break;\n    case \"Rain\":\n    case \"Drizzle\":\n        msg.payload = \"Water\"; // Déšť → Vodní Pokémoni 🌊\n        break;\n    case \"Clouds\":\n        msg.payload = \"Normal\"; // Oblačno → Normální Pokémoni 🐻\n        break;\n    case \"Thunderstorm\":\n        msg.payload = \"Electric\"; // Bouřka → Električtí Pokémoni ⚡\n        break;\n    case \"Snow\":\n        msg.payload = \"Ice\"; // Sníh → Ledoví Pokémoni ❄️\n        break;\n    case \"Mist\":\n    case \"Fog\":\n        msg.payload = \"Ghost\"; // Mlha → Duchovní Pokémoni 👻\n        break;\n    case \"Haze\":\n        msg.payload = \"Psychic\"; // Opar → Psychičtí Pokémoni 🔮\n        break;\n    default:\n        msg.payload = \"Normal\"; // Pokud je neznámé počasí, vrátí Normální Pokémony\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 300,
+        "wires": [
+            [
+                "2852d80962599e56",
+                "4688267de1dba48f",
+                "29390dc628bd8e0b"
+            ]
+        ]
+    },
+    {
+        "id": "ac922a65992daf05",
+        "type": "function",
+        "z": "7af0a04bde3f8c29",
+        "name": "function 6",
+        "func": "var pokemons = msg.payload.pokemon; // Seznam Pokémonů daného typu\n\nif (!pokemons || pokemons.length === 0) {\n    msg.payload = \"Unknown\"; // Pokud není žádný Pokémon, vrátíme \"Unknown\"\n    return msg;\n}\n\n// Vybere náhodného Pokémona\nvar randomPokemon = pokemons[Math.floor(Math.random() * pokemons.length)];\n\n// Uloží jméno Pokémona do msg.payload\nmsg.payload = randomPokemon.pokemon.name;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 480,
+        "wires": [
+            [
+                "5c5536fb284d264a"
+            ]
+        ]
+    },
+    {
+        "id": "5c5536fb284d264a",
+        "type": "http request",
+        "z": "7af0a04bde3f8c29",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://pokeapi.co/api/v2/pokemon/{{payload}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1150,
+        "y": 520,
+        "wires": [
+            [
+                "7047ac854d63c0ca"
+            ]
+        ]
+    },
+    {
+        "id": "7047ac854d63c0ca",
+        "type": "function",
+        "z": "7af0a04bde3f8c29",
+        "name": "function 7",
+        "func": "msg.payload = {\n    name: msg.payload.name,\n    sprite: msg.payload.sprites.front_default,\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 600,
+        "wires": [
+            [
+                "88d6b90abb0b2328"
+            ]
+        ]
+    },
+    {
+        "id": "67a3d45457719bbb",
+        "type": "ui_template",
+        "z": "7af0a04bde3f8c29",
+        "group": "dd40cc21fde408fe",
+        "name": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<div style=\"text-align: center; height: fit-content;\">\n    <h2>{{msg.payload.name}}</h2>\n    <img src=\"{{msg.payload.sprite}}\" alt=\"{{msg.payload.name}}\" style=\"width: 150px;\">\n    <p style=\"font-weight: bold; opacity: 0.4\">Type: {{msg.payload.type}}</p>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "x": 1540,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "34f6f93396696ea0",
+        "type": "ui_form",
+        "z": "7af0a04bde3f8c29",
+        "name": "",
+        "label": "",
+        "group": "dd40cc21fde408fe",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Town",
+                "value": "Town",
+                "type": "text",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "Town": ""
+        },
+        "payload": "",
+        "submit": "Submit",
+        "cancel": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "x": 170,
+        "y": 340,
+        "wires": [
+            [
+                "9f7f61270ee9324d"
+            ]
+        ]
+    },
+    {
+        "id": "29390dc628bd8e0b",
+        "type": "ui_template",
+        "z": "7af0a04bde3f8c29",
+        "group": "601c372751881e53",
+        "name": "",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "format": "<div class=\"legend-container\">\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Fire'}\">\n        <span class=\"emoji\">🔥</span> Fire (Slunečno)\n    </div>\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Water'}\">\n        <span class=\"emoji\">🌊</span> Water (Déšť / Mrholení)\n    </div>\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Normal'}\">\n        <span class=\"emoji\">🐻</span> Normal (Oblačno)\n    </div>\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Electric'}\">\n        <span class=\"emoji\">⚡</span> Electric (Bouřka)\n    </div>\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Ice'}\">\n        <span class=\"emoji\">❄️</span> Ice (Sníh)\n    </div>\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Ghost'}\">\n        <span class=\"emoji\">👻</span> Ghost (Mlha)\n    </div>\n    <div class=\"legend-item\" ng-class=\"{'highlight': msg.payload === 'Psychic'}\">\n        <span class=\"emoji\">🔮</span> Psychic (Opar)\n    </div>\n</div>\n\n<style>\n    .legend-container {\n        height: fit-content;\n        display: flex;\n        flex-direction: column;\n        justify-content: space-between;\n        padding: 20px;\n        font-family: 'Arial', sans-serif;\n        background-color: #f8f9fa;\n        border-radius: 8px;\n        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n    }\n\n    .legend-item {\n        display: flex;\n        align-items: center;\n        margin: 5px 0;\n        padding: 10px;\n        background-color: #ffffff;\n        border-radius: 8px;\n        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n        width: auto;\n        box-sizing: border-box;\n        transition: transform 0.3s ease, background-color 0.3s ease;\n    }\n\n    .legend-item:hover {\n        transform: translateY(-5px);\n        background-color: #f1f1f1;\n    }\n\n    .legend-icon {\n        font-size: 24px;\n        margin-right: 10px;\n    }\n\n    .legend-text {\n        font-size: 16px;\n        color: #555;\n    }\n    .highlight {\n    border-color: #e843f4; /* Zvýrazněná barva */\n    box-shadow: 0 0 10px rgba(232, 67, 244, 0.6);\n    transform: scale(1.05);\n    font-weight: bold;\n    }\n\n    /* Specific styles for each type */\n    .legend-item.fire {\n        border-left: 4px solid #f44336;\n    }\n\n    .legend-item.water {\n        border-left: 4px solid #2196F3;\n    }\n\n    .legend-item.normal {\n        border-left: 4px solid #9E9E9E;\n    }\n\n    .legend-item.electric {\n        border-left: 4px solid #FFEB3B;\n    }\n\n    .legend-item.ice {\n        border-left: 4px solid #00BCD4;\n    }\n\n    .legend-item.ghost {\n        border-left: 4px solid #9C27B0;\n    }\n\n    .legend-item.water-drizzle {\n        border-left: 4px solid #4CAF50;\n    }\n\n    .legend-item.psychic {\n        border-left: 4px solid #673AB7;\n    }\n\n    @media (max-width: 768px) {\n        .legend-item {\n            width: calc(50% - 20px);\n        }\n    }\n\n    @media (max-width: 480px) {\n        .legend-item {\n            width: 100%;\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "x": 720,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ada15f237255d313",
+        "type": "ui_template",
+        "z": "7af0a04bde3f8c29",
+        "group": "4ac1bfe9e288c9ec",
+        "name": "",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-show=\"msg.weatherIcon\" class=\"weather-container\">\n    <div class=\"weather-item\">\n        <div class=\"weather-icon\">\n            <img src=\"{{msg.weatherIcon}}\" alt=\"Weather Icon\">\n        </div>\n        <div class=\"weather-info\">\n            <h3>{{msg.cityName}}</h3>\n            <p class=\"temperature\">{{msg.temperature}} °C</p>\n            <p class=\"humidity\">Vlhkost: {{msg.humidity}}%</p>\n        </div>\n    </div>\n</div>\n\n<style>\n    .weather-container {\n        display: flex;\n        justify-content: center;\n        align-items: center;\n        flex-direction: column;\n        background-color: #fff;\n        border-radius: 8px;\n        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        padding: 20px;\n        width: 85%;\n        height: fit-content;\n        margin: 20px auto;\n    }\n\n    .weather-item {\n        display: flex;\n        justify-content: center;\n        align-items: center;\n        flex-direction: column;\n        width: auto;\n    }\n\n    .weather-icon img {\n        width: 60px;\n        height: 60px;\n    }\n\n    .weather-info {\n        text-align: center;\n        margin-top: 15px;\n    }\n\n    .weather-info h3 {\n        font-size: 20px;\n        font-weight: bold;\n        color: #333;\n    }\n\n    .temperature {\n        font-size: 24px;\n        color: #FF5722;\n        font-weight: 600;\n        margin-top: 5px;\n    }\n\n    .humidity {\n        font-size: 16px;\n        color: #555;\n        margin-top: 5px;\n    }\n\n    @media (max-width: 768px) {\n        .weather-container {\n            width: 90%;\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "x": 640,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "06a9b6d3654828f2",
+        "type": "function",
+        "z": "7af0a04bde3f8c29",
+        "name": "function 8",
+        "func": "msg.cityName = msg.payload.name;\nmsg.temperature = msg.payload.main.temp;\nmsg.humidity = msg.payload.main.humidity;\nmsg.weatherIcon = \"https://openweathermap.org/img/wn/\" + msg.payload.weather[0].icon + \"@2x.png\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 460,
+        "wires": [
+            [
+                "ada15f237255d313"
+            ]
+        ]
+    },
+    {
+        "id": "4688267de1dba48f",
+        "type": "function",
+        "z": "7af0a04bde3f8c29",
+        "name": "function 9",
+        "func": "msg.payload = {\n    type: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 660,
+        "wires": [
+            [
+                "88d6b90abb0b2328"
+            ]
+        ]
+    },
+    {
+        "id": "88d6b90abb0b2328",
+        "type": "join",
+        "z": "7af0a04bde3f8c29",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1470,
+        "y": 580,
+        "wires": [
+            [
+                "67a3d45457719bbb"
+            ]
+        ]
+    },
+    {
+        "id": "dd40cc21fde408fe",
+        "type": "ui_group",
+        "name": "Poké Weather",
+        "tab": "8824db6e249bc13e",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "601c372751881e53",
+        "type": "ui_group",
+        "name": "Legenda",
+        "tab": "8824db6e249bc13e",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "4ac1bfe9e288c9ec",
+        "type": "ui_group",
+        "name": "Počasí",
+        "tab": "8824db6e249bc13e",
+        "order": 6,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "8824db6e249bc13e",
+        "type": "ui_tab",
+        "name": "Pokemon Weather",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
