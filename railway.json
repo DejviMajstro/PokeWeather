@@ -1,0 +1,13 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "services": [
+    {
+      "name": "node-red",
+      "env": {
+        "PORT": "1880"
+      }
+    }
+  ]
+}
